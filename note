@@ -1,0 +1,130 @@
+ http://www.cnblogs.com/ggjucheng/p/3352477.html
+ http://calvinliu.iteye.com/blog/802364
+
+cxf.xml:
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+         http://cxf.apache.org/jaxws
+         http://cxf.apache.org/schemas/jaxws.xsd
+         http://cxf.apache.org/jaxrs
+         http://cxf.apache.org/schemas/jaxrs.xsd">
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
+
+	<import resource="classpath:cxfutils/webapp-defaults.xml" /> 
+
+	<bean id="PEACEServiceTransport" class="cxfutils.transport.servlet.ServletTransport">
+		<property name="serviceMapping">
+			<map>
+				<entry key="/coverage-service" value-ref="coverageServiceRESTEndpoint" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="coverageServiceRESTEndpoint" class="cxfutils.endpoint.jaxrs.JAXRSServiceEndpoint">
+		<property name="serviceBean" ref="coverageRESTServiceImp" />
+		<property name="providers">
+			<list>
+				<bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
+			</list>
+		</property>
+		<property name="extensionMappings">
+			<map>
+				<entry key="json" value="application/json" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="coverageRESTServiceImp"
+		class="">
+		<property name="coverageService" ref="coverageService" />
+	</bean>
+	
+</beans>
+
+applicationContext.xml
+<import resource="classpath:com/ms/enttech/emp/coverage/restfulservice/impl/cxf.xml" />
+
+web.xml
+	<servlet>
+		<servlet-name>CXFServlet</servlet-name>
+		<servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>CXFServlet</servlet-name>
+		<url-pattern>/cxf/*</url-pattern>
+	</servlet-mapping>
+
+
+java:
+@XmlRootElement(name = "CoverageRequest")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CoverageRequest {
+	@XmlElementWrapper(name="coverageRequestInfos")
+	@XmlElement(name = "CoverageRequestInfo")
+	private List<CoverageRequestInfo> coverageRequestInfos;
+	
+	private String reqestId;
+	
+	private String source;
+	
+	private String reviewType;
+	
+	private String target;
+		
+	public CoverageRequest() {
+	}
+	
+	
+
+	public List<CoverageRequestInfo> getCoverageRequestInfos() {
+		return coverageRequestInfos;
+	}
+
+	public void setCoverageRequestInfos(
+			List<CoverageRequestInfo> coverageRequestInfos) {
+		this.coverageRequestInfos = coverageRequestInfos;
+	}
+	...
+}
+
+
+@XmlRootElement(name="CoverageResponse")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CoverageResponse {
+	@XmlElementWrapper(name="workItemAssignments")
+	@XmlElement(name = "WorkItemAssignment")
+	List<WorkItemAssignment> workItemAssignments;
+	
+	private long retCode;
+	
+	private String message;
+	
+	public CoverageResponse() {
+		retCode = 0;
+		message = "OK";
+	}
+	
+	public long getRetCode() {
+		return retCode;
+	}
+...
+}
+
+
+public interface ICoverageRESTService{
+
+	@POST
+    @Path("/coverages")
+    @Consumes("application/json")
+	@Produces("application/json")
+	public CoverageResponse getCoverage(CoverageRequest requestInfoList);
+}
