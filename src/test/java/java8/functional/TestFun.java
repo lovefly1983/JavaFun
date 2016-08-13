@@ -4,13 +4,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -23,11 +18,10 @@ import java.util.stream.Stream;
 public class TestFun {
 
     // Method reference
-    Consumer<Integer> print = new PrintConsumer<>();
-    Consumer<String> printStr = new PrintConsumer<>();
-    Supplier<String> stringSupplier = String::new;
+    private final Consumer<Integer> print = new PrintConsumer<>();
+    private final Consumer<String> printStr = new PrintConsumer<>();
 
-    class PrintConsumer<T> implements Consumer<T> {
+    private class PrintConsumer<T> implements Consumer<T> {
         @Override
         public void accept(T t) {
             System.out.println(t);
@@ -43,9 +37,7 @@ public class TestFun {
     public void testStream() {
 
         List<Integer> ret = IntStream.of(1, 3, 4).boxed().collect(Collectors.toList());
-        ret.stream().forEach(v -> {
-            System.out.println(v);
-        });
+        ret.stream().forEach(System.out::println);
 
         Stream<Integer> integerStream = IntStream.of(1, 3, 4).boxed();
         integerStream.filter(x -> x >= 3).forEach(print);
@@ -66,16 +58,14 @@ public class TestFun {
 
     @Test
     public void testConsumer() {
-        Consumer<Integer> consumer = i -> System.out.println(i);
+        Consumer<Integer> consumer = System.out::println;
         IntStream.of(4,5,6).boxed().forEach(consumer);
         IntStream.of(4,5,6).boxed().forEach(v -> consumer.andThen(x -> System.out.println("then: " + x++)).accept(v));
     }
 
     @Test
     public void testSupplier() {
-        IntStream.of(8,9,10).boxed().forEach(i -> {
-            printIt(() -> i);
-        });
+        IntStream.of(8,9,10).boxed().forEach(i -> printIt(() -> i));
     }
 
     @FunctionalInterface
@@ -86,15 +76,13 @@ public class TestFun {
     @Test
     public void testFunction() {
         // Function
-        Function<String, Integer> function1 = Integer::valueOf;
         Predicate<String> nonNull = Objects::nonNull;
-        Assert.assertTrue(nonNull.test(new String()));
+        Assert.assertTrue(nonNull.test(""));
 
         // Customized FunctionalInterface
         Converter<String, Integer> converter = Integer::valueOf;
-        Converter<String, Integer> converter2 = from -> Integer.valueOf(from);
         Assert.assertEquals(123, converter.convert("123").intValue());
-        Assert.assertEquals(123, converter2.convert("123").intValue());
+        Assert.assertEquals(44, converter.convert("44").intValue());
 
         // Comparator
         Comparator<Person> comparator = (p1, p2) -> p1.firstName.compareTo(p2.firstName);
@@ -102,7 +90,7 @@ public class TestFun {
         Person p2 = new Person("0", "1");
         List<Person> persons = Arrays.asList(p1, p2);
         persons.sort(comparator);
-        persons.stream().forEach(p -> System.out.println(p));
+        persons.stream().forEach(System.out::println);
     }
 
     class Person {
@@ -114,28 +102,12 @@ public class TestFun {
                     '}';
         }
 
-        public String firstName;
-        public String lastName;
+        public final String firstName;
+        public final String lastName;
 
         public Person(String a, String b) {
             firstName = a;
             lastName = b;
-        }
-
-        public String getFirstName() {
-            return firstName;
-        }
-
-        public void setFirstName(String firstName) {
-            this.firstName = firstName;
-        }
-
-        public String getLastName() {
-            return lastName;
-        }
-
-        public void setLastName(String lastName) {
-            this.lastName = lastName;
         }
     }
 
