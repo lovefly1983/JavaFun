@@ -2,76 +2,81 @@ package multithread.producerconsumer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by lovefly1983.
  */
 public class ProducerConsumerTest {
 
-    /**
-     * @param args
-     */
+    private final static int MAX_MESSAGES_IN_QUEUE = 5;
+    private static List<String> queue = new ArrayList();
+    private static final Object lock = new Object[0];
+
     public static void main(String[] args) {
         testProducerAndConsumer();
     }
 
     private static void testProducerAndConsumer() {
-        Thread producer = new Producer();
+        Producer producer = new Producer();
         Thread consumer = new Consumer();
-        producer.start();
+
+        producer.generateMessages();
         consumer.start();
     }
 
-    private static class Producer extends Thread {
-        public void run() {
-            for (int i = 0; i < 10; i++) {
-                produce(i);
-            }
-            System.out.println("Producer is done...");
+    private static class Producer {
+        ExecutorService executorService;
+        public Producer() {
+            executorService = Executors.newFixedThreadPool(5);
         }
 
-        private void produce(int i) {
-            synchronized (queue) {
-                if (queue.size() == MAXN) {
-                    try {
-                        queue.wait();
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-
-                queue.add(i);
-                System.out.println("produce id : " + i);
-                queue.notifyAll();
+        public void generateMessages() {
+            for (int i = 0; i < 10; i++) {
+                putMessage("Message " + i);
             }
+        }
+        private void putMessage(String message) {
+            executorService.submit(() -> {
+                synchronized (lock) {
+                    while (queue.size() == MAX_MESSAGES_IN_QUEUE) {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    System.out.println("Put message : " + message);
+                    queue.add(message);
+                    lock.notifyAll();
+                }
+            });
         }
     }
 
     private static class Consumer extends Thread {
         public void run() {
-            for (; ; ) {
+            while(true) {
                 consume();
             }
         }
 
         private static void consume() {
-            synchronized (queue) {
-                if (queue.size() == 0) {
+            synchronized (lock) {
+                while (queue.size() == 0) {
                     try {
-                        queue.wait();
+                        lock.wait();
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
-                int id = queue.remove(0);
+                String id = queue.remove(0);
                 System.out.println("Consume id : " + id);
-                queue.notifyAll();
+                lock.notifyAll();
             }
         }
     }
 
-    private final static int MAXN = 5;
-    private static List<Integer> queue = new ArrayList<Integer>();
+
 }
