@@ -38,6 +38,7 @@ public class ReentrantLockTest {
         }
     }
 
+    // Think ReentrantLock as synchronized keyword, and await/signal as wait/notify
     private static class ConditionTest extends MultithreadTestBase {
         final Lock lock = new ReentrantLock();
         final Condition notFull  = lock.newCondition();
