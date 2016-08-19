@@ -1,4 +1,4 @@
-package multithread.cyclicbarrier;
+package fun.multithread.cyclicbarrier;
 
 /**
  * Created by lovefly1983.

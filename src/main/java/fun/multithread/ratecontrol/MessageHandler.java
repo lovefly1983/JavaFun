@@ -1,4 +1,4 @@
-package multithread.ratecontrol;
+package fun.multithread.ratecontrol;
 
 /**
  * Created by lovefly1983.

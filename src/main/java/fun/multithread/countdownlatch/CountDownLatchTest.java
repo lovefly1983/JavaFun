@@ -1,4 +1,4 @@
-package multithread.countdownlatch;
+package fun.multithread.countdownlatch;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

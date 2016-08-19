@@ -1,4 +1,4 @@
-// Unrolled and not inlined version with 2 readers and 2 writers
+package fun.multithread;// Unrolled and not inlined version with 2 readers and 2 writers
 // No data structure used for readers and writers to work with
 // Specific notification locks are used to improve performance
 

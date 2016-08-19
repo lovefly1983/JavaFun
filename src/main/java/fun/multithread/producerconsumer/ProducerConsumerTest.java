@@ -1,4 +1,4 @@
-package multithread.producerconsumer;
+package fun.multithread.producerconsumer;
 
 import java.util.ArrayList;
 import java.util.List;

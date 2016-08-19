@@ -1,4 +1,4 @@
-package multithread.ratecontrol;
+package fun.multithread.ratecontrol;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

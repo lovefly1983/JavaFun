@@ -1,3 +1,4 @@
+package fun.cf;
 
 public class KMP {
     private static java.io.PrintStream out = System.out;

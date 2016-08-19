@@ -1,6 +1,6 @@
-package multithread.reentrantlock;
+package fun.multithread.reentrantlock;
 
-import multithread.MultithreadTestBase;
+import fun.multithread.MultithreadTestBase;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;

@@ -1,4 +1,4 @@
-package multithread.ReadWriterLock;
+package fun.multithread.ReadWriterLock;
 
 import java.util.HashMap;
 import java.util.Map;
