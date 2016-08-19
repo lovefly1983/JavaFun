@@ -1,8 +1,8 @@
 package jmockit.injectable;
 
-import jmockit.Callback;
-import jmockit.NameCallback;
-import jmockit.PlaceCallback;
+import jmockit.targets.Callback;
+import jmockit.targets.NameCallback;
+import jmockit.targets.PlaceCallback;
 import mockit.Injectable;
 import mockit.Mocked;
 import org.junit.Assert;

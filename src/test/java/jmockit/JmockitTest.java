@@ -1,7 +1,8 @@
 package jmockit;
 
 
-import mockit.Injectable;
+import jmockit.targets.Callback;
+import jmockit.targets.NameCallback;
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.Mocked;
