@@ -1,6 +1,6 @@
 package fun.kafka.consumer;
 
-import fun.kafka.consumer.handler.IMessageResult;
+import fun.kafka.consumer.handler.IConsumeMessageResult;
 import fun.kafka.consumer.handler.MessageHandler;
 import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
@@ -48,7 +48,7 @@ public final class MessageConsumer<K, V> implements Runnable {
         LOG.debug("Started thread {} for topic: {}.", getConsumerId(), this.topic);
         // Specify as 1 here so that we will only have one stream for one thread, and that stream could serve several
         // partitions.
-        Map<String, Integer> topicCountMap = ConsumersManager.toTopicCountMap(this.topic, 1);
+        Map<String, Integer> topicCountMap = ConsumersManager.toTopicConsumerCountMap(this.topic, 1);
         Map<String, List<KafkaStream<K, V>>> consumerMap = consumerConnector.createMessageStreams(topicCountMap, this.keyDecoder, this.valueDecoder);
         List<KafkaStream<K, V>> streams = consumerMap.get(topic);
         KafkaStream<K, V> stream = streams.get(0);
@@ -62,7 +62,7 @@ public final class MessageConsumer<K, V> implements Runnable {
             MessageAndMetadata<K, V> msgAndData = consumerIterator.next();
             K key = msgAndData.key();
 
-            IMessageResult result = null;
+            IConsumeMessageResult result = null;
             try {
                 result = handler.onMessage(this.topic, key, msgAndData.message());
                 if (result.wasProcessed()) {

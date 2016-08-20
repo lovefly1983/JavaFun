@@ -1,7 +1,7 @@
 package fun.kafka.consumer.handler;
 
 
-public interface IMessageResult {
+public interface IConsumeMessageResult {
     boolean wasProcessed();
 }
 

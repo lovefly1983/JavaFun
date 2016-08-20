@@ -1,10 +1,14 @@
 package fun.kafka.consumer;
 
 import fun.kafka.consumer.config.KafkaConfigProperty;
+import fun.kafka.consumer.handler.DefaultMessageHandler;
 import fun.kafka.consumer.handler.MessageHandler;
+import fun.kafka.consumer.handler.StringMessageHandler;
 import kafka.consumer.ConsumerConfig;
 import kafka.javaapi.consumer.ConsumerConnector;
 import kafka.serializer.Decoder;
+import kafka.serializer.DefaultDecoder;
+import kafka.serializer.StringDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,29 +32,36 @@ public final class ConsumersManager {
     private final Properties configProperties;
     private final String topicName;
     private final int numConsumers;
+    private final String appName;
 
-    private ConsumersManager(Properties configProperties, String topicName, int numConsumers) {
+    private ConsumersManager(Properties configProperties, String appName, String topicName, int numConsumers) {
         this.configProperties = configProperties;
         this.isClosed = new AtomicBoolean(false);
         this.isInitialized = new AtomicBoolean(false);
+        this.appName = appName;
         this.topicName = topicName;
         this.numConsumers = numConsumers;
     }
 
-    protected static final Map<String, Integer> toTopicCountMap(String topic, int numThreads) {
-        Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
-        topicCountMap.put(topic, numThreads);
-        return topicCountMap;
+    protected static final Map<String, Integer> toTopicConsumerCountMap(String topic, int numConsumers) {
+        Map<String, Integer> topicConsumerCountMap = new HashMap<String, Integer>();
+        topicConsumerCountMap.put(topic, numConsumers);
+        return topicConsumerCountMap;
+    }
+    public void startConsumers(StringMessageHandler messageHandler) throws Exception {
+        startConsumers(messageHandler, new StringDecoder(null), new StringDecoder(null));
     }
 
-    public <K, V> void startConsumers(MessageHandler<K, V> messageHandler,
-                                                  Decoder<K> keySerializer, Decoder<V> valueSerializer) throws Exception {
-        ConsumerConfig consumerConfig = createConsumerConfig();
-        startConsumers(messageHandler, consumerConfig, toTopicCountMap(topicName, numConsumers), keySerializer, valueSerializer);
+    /**
+     * Start the consumers.
+     */
+    public <K, V> void startConsumers(MessageHandler<K, V> messageHandler, Decoder<K> keySerializer, Decoder<V> valueSerializer) throws Exception {
+        ConsumerConfig consumerConfig = new ConsumerConfig(configProperties);
+        startConsumers(messageHandler, consumerConfig, toTopicConsumerCountMap(topicName, numConsumers), keySerializer, valueSerializer);
     }
 
     public <K, V> void startConsumers(MessageHandler<K, V> messageHandler, ConsumerConfig consumerConfig,
-                                                  Map<String, Integer> topicCountMap, Decoder<K> keySerializer, Decoder<V> valueSerialzier) {
+                                      Map<String, Integer> topicCountMap, Decoder<K> keyDeserializer, Decoder<V> valueDeserialzier) {
         if (this.isClosed.get()) {
             throw new IllegalStateException("Cannot start consumers since container is already closed!");
         }
@@ -65,18 +76,12 @@ public final class ConsumersManager {
             for (int i = 0; i < numThreads; i++) {
                 // Each thread will have a connector so that they will not affect each other.
                 ConsumerConnector consumerConnector = kafka.consumer.Consumer.createJavaConsumerConnector(consumerConfig);
-                MessageConsumer messageConsumer = new MessageConsumer<>("appname", messageHandler, consumerConnector, topic, i, keySerializer, valueSerialzier);
+                MessageConsumer messageConsumer = new MessageConsumer<>(this.appName, messageHandler, consumerConnector, topic, i, keyDeserializer, valueDeserialzier);
                 topicConsumersContainer.startConsumer(messageConsumer);
             }
             this.topicConsumersContainer = topicConsumersContainer;
         });
         LOG.info("********Kafka consumer threads started......");
-    }
-
-    private ConsumerConfig createConsumerConfig() {
-        Properties consumerProps = new Properties();
-        consumerProps.putAll(configProperties);
-        return new ConsumerConfig(consumerProps);
     }
 
     // Call this after we are done.
@@ -93,8 +98,9 @@ public final class ConsumersManager {
      */
     public static class ConsumersManagerBuilder {
         private String zookeeperUrl;
-        private String consumerGroupName;
-        private String topic;
+        private String consumerGroupName = "default-consumer-group";
+        private String topic = "unknown-topic-name";
+        private String appName = "default-app-name";
         private int numOfConsumers;
         private Properties configProperties;
 
@@ -110,6 +116,11 @@ public final class ConsumersManager {
 
         public ConsumersManagerBuilder withTopic(String topic) {
             this.topic = topic;
+            return this;
+        }
+
+        public ConsumersManagerBuilder withAppName(String appName) {
+            this.appName = appName;
             return this;
         }
 
@@ -131,7 +142,7 @@ public final class ConsumersManager {
          */
         public ConsumersManager build() {
             Properties validProperties = createConfigProperties(validateZookeeperUrl());
-            return new ConsumersManager(validProperties, this.topic, this.numOfConsumers);
+            return new ConsumersManager(validProperties, this.appName, this.topic, this.numOfConsumers);
         }
 
         private String validateZookeeperUrl() {
