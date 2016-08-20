@@ -48,7 +48,11 @@ public class KafkaMessageProducer <T, S extends Serializer<T>>{
         this.kafkaProducer.close();
     }
 
-    public static <T, S extends Serializer<T>> KafkaMessageProducer build(String bootstrapServers, S valueSerializer) {
-        return new KafkaMessageProducer<>(bootstrapServers, valueSerializer, new StringPartitionKeyCollector());
+    public static <T, S extends Serializer<T>> KafkaMessageProducer build(String bootstrapServers, S valueSerializer, PartitionKeyCollector<T> partitionKeyCollector) {
+        return new KafkaMessageProducer<>(bootstrapServers, valueSerializer, partitionKeyCollector);
+    }
+
+    public static <S extends Serializer<String>> KafkaMessageProducer buildWithDefaultPartitioner(String bootstrapServers, S valueSerializer) {
+        return build(bootstrapServers, valueSerializer, new StringPartitionKeyCollector());
     }
 }

@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author cwang
+ * @author lovefly1983
  */
 public class MockedTest {
 

@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author cwang
+ * @author lovefly1983
  */
 public class MockupTest {
     private static final String MOCKED_NAME = "mocked name";

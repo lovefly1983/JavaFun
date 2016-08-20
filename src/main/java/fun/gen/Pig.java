@@ -2,7 +2,7 @@ package fun.gen;
 
 
 /**
- * @author cwang
+ * @author lovefly1983
 */
 public class Pig extends Animal<Vegetable> {
 

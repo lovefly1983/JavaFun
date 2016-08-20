@@ -1,7 +1,7 @@
 package fun.gen;
 
 /**
- * @author cwang
+ * @author lovefly1983
  */
 public class Animal<T extends Food> {
     T food;

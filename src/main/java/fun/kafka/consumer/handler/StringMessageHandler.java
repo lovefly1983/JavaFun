@@ -11,7 +11,7 @@ public class StringMessageHandler implements MessageHandler<String, String> {
 
     @Override
     public IConsumeMessageResult onMessage(String topic, String key, String value) throws Exception {
-        log.info("#############String message handler receives message with key: {} and value: {}", key, value);
+        log.debug("###################String message handler receives message with key: {} and value: {}##########", key, value);
         return ConsumeMessageResult.SUCCEED;
     }
 }

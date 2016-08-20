@@ -10,7 +10,7 @@ import org.junit.Test;
 
 
 /**
- * @author cwang
+ * @author lovefly1983
  */
 public class MyInjectableTest {
     // Mocked instances (rather than conventional "mock objects") will be

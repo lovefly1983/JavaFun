@@ -14,22 +14,23 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * @author cwang
+ * @author lovefly1983
  */
 public class ConsumerTest {
     private static ConsumersManager consumersManager;
     private static LocalZookeeper localZookeeper;
     private static LocalKafka localKafka;
     private static final String ZOOKEEPER_URL = "localhost:2181";
-    private static final String BROKER_LIST = "localhost:9090";
+    private static final String BROKER_LIST = "localhost:9092";
     private static final String GROUP_NAME= "test-group";
     private static final String TOPIC_NAME = "test-topic";
+    private static final KafkaMessageProducer kafkaMessageProducer = KafkaMessageProducer.buildWithDefaultPartitioner(BROKER_LIST, new StringSerializer());
 
     @BeforeClass
     public static void setupClass() throws InterruptedException, IOException {
         localZookeeper = new LocalZookeeper(2181);
         List<Integer> kafkaPorts = new ArrayList<>();
-        kafkaPorts.add(9090);
+        kafkaPorts.add(9092);
         localKafka = new LocalKafka(localZookeeper.getConnection(), new Properties(), kafkaPorts);
 
         localZookeeper.startup();
@@ -41,7 +42,6 @@ public class ConsumerTest {
     @Test
     public void testConsumer() throws Exception {
         //1. Produce messages
-        KafkaMessageProducer kafkaMessageProducer = KafkaMessageProducer.build(BROKER_LIST, new StringSerializer());
         kafkaMessageProducer.sendMessage(TOPIC_NAME, "test-message");
 
         //2. Consumer messages
@@ -54,15 +54,20 @@ public class ConsumerTest {
                 .withNumOfConsumers(1)
                 .build();
         consumersManager.startConsumers(messageHandler);
-        Thread.sleep(10000);
+        Thread.sleep(3000);
     }
 
     @AfterClass
     public static void tearDown() {
-        localKafka.shutdown();
-        localZookeeper.shutdown();
+        // Producer
+        kafkaMessageProducer.close();
+
+        // Consumer
         if (consumersManager != null) {
             consumersManager.shutdown();
         }
+
+        localKafka.shutdown();
+        localZookeeper.shutdown();
     }
 }
