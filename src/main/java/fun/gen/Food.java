@@ -3,5 +3,5 @@ package fun.gen;
 /**
  * @author cwang
  */
-public class Food {
+public class Food extends Anything {
 }
