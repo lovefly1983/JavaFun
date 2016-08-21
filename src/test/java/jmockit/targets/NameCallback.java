@@ -1,7 +1,7 @@
 package jmockit.targets;
 
 /**
- * @author cwang
+ * @author lovefly1983
  */
 public class NameCallback extends Callback {
 

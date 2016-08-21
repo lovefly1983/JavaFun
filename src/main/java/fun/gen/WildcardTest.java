@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * For all the wildcard of java generics.
  *
- * @author cwang
+ * @author lovefly1983
  */
 public class WildcardTest {
 

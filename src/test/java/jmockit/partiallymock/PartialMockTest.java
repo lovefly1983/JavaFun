@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * To play around the partial mock in jmockit.
  *
- * @author cwang
+ * @author lovefly1983
  */
 public class PartialMockTest {
     /**

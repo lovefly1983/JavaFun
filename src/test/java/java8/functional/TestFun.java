@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * @author cwang
+ * @author lovefly1983
  */
 public class TestFun {
 

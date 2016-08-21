@@ -7,9 +7,16 @@
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.kafka>0.8.2.2</version.kafka>
+        <version.kafka_scala>2.10</version.kafka_scala>
         <version.jackson>2.8.1</version.jackson>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_${version.kafka_scala}</artifactId>
+            <version>${version.kafka}</version>
+        </dependency>
         <!-- the core, which includes Streaming API, shared low-level abstractions (but NOT data-binding) -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
