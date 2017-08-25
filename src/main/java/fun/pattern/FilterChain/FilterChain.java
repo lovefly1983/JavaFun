@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class FilterChain  {
     private List<Filter> filters = new ArrayList();
-    private int cnt = 0;
+    private int cnt = 0; // it is not thread safe
     private PlayService playService;
 
     public FilterChain(PlayService playService) {
