@@ -1,4 +1,4 @@
-package fun.gen;
+package fun.generic;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;

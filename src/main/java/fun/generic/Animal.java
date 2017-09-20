@@ -1,4 +1,4 @@
-package fun.gen;
+package fun.generic;
 
 /**
  * @author lovefly1983

@@ -1,4 +1,4 @@
-package fun.gen;
+package fun.generic;
 
 import java.io.BufferedReader;
 import java.io.IOException;
