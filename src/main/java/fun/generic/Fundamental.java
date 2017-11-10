@@ -101,8 +101,9 @@ class ArrayMS<T> {
     }
 
     T get(int i) {
-        if (i >= 0 && i <= index)
+        if (i >= 0 && i <= index) {
             return arr[i];
+        }
         return null;
     }
 

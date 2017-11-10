@@ -9,6 +9,12 @@ import java.util.Arrays;
  */
 public class TestSolutionA {
     @Test
+    public void ttt() {
+        String x = "中国111xx";
+        System.out.println(new String(x.getBytes()));
+    }
+
+    @Test
     public void testA() {
         SolutionA sa = new SolutionA();
         int[] h = {2, 2, 3};
