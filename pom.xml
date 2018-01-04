@@ -6,11 +6,11 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.kafka>0.8.2.2</version.kafka>
-        <version.kafka_scala>2.10</version.kafka_scala>
-        <version.jackson>2.8.1</version.jackson>
-    </properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <version.kafka>0.8.2.2</version.kafka>
+    <version.kafka_scala>2.10</version.kafka_scala>
+    <version.jackson>2.8.1</version.jackson>
+</properties>
     <dependencies>
         <!-- Spring -->
 
@@ -71,6 +71,11 @@
             <groupId>aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <version>1.5.4</version>
+        </dependency>
+        <dependency>
+            <groupId>info.batey.kafka</groupId>
+            <artifactId>kafka-unit</artifactId>
+            <version>0.7</version>
         </dependency>
         <!--<dependency>-->
             <!--<groupId>org.apache.phoenix</groupId>-->
