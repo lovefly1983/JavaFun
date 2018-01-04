@@ -10,8 +10,8 @@ class EmailDsl {
      */
 
     def static make(closure) {
-        EmailDsl emailDsl = new EmailDsl()
-        // any method called in closure will be delegated to the EmailDsl class
+        EmailDsls emailDsl = new EmailDsls()
+        // any method called in closure will be delegated to the EmailDsls class
         closure.delegate = emailDsl
         closure()
     }
@@ -37,7 +37,7 @@ class EmailDsl {
     }
 }
 
-println EmailDsl.make({
+println EmailDsls.make({
     from 'a'
     to 'b'
     body '111111'

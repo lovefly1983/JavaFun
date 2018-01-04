@@ -1,21 +1,16 @@
 package fun.groovy;
 
-import com.google.common.primitives.Longs;
-
 import javax.script.Compilable;
 import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * Created by qingyun on 10/31/17.
+ * Created by lovefly1983 on 10/31/17.
  */
 public class TestGroovy {
     public static void main(String[] args) {
@@ -24,7 +19,7 @@ public class TestGroovy {
         ScriptEngine engine  = manager.getEngineByName("groovy");
         CompiledScript script = null;
         try {
-            InputStream is = TestGroovy.class.getResourceAsStream("/EmailDsl.groovy");
+            InputStream is = TestGroovy.class.getResourceAsStream("/EmailDsls.groovy");
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             script = ((Compilable) engine).compile(reader);
             script.eval();

@@ -54,7 +54,7 @@ public class ConsumerTest {
                 .withNumOfConsumers(1)
                 .build();
         consumersManager.startConsumers(messageHandler);
-        Thread.sleep(3000);
+        Thread.sleep(10000);
     }
 
     @AfterClass
